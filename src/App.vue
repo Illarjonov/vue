@@ -2,37 +2,27 @@
  <div class="app">
      <h1 style="text-align: center">Страница с пользователями</h1>
      <my-input
-        v-model="searchUsers"
-        @update:model-value="setSearchUsers"
-        placeholder="Поиск"
-     />
+            @update:model-value='setSearchUsers'
+            placeholder='Поиск'>
+     </my-input>
 
      <div >
         <my-button
-                @click="showModal"
+                @click='showModal'
                 class = 'addUser'
         > Добавить пользователя </my-button>
-<!--        <my-selected-->
-<!--            :model-value="selectedSort"-->
-<!--            @update:model-value="setSelectedSort"-->
-<!--            :options="sortOptions"-->
-<!--            style="cursor: pointer;"-->
-<!--        ></my-selected>-->
      </div>
         <my-modal
-                v-model:show="modalVisible"
-                @update:model-bool="setModalVisible"
+                v-model:show='modalVisible'
         >
             <post-form
-                    @create = "createPost"
-                    @edit="editUser"
+                    @hidenModal = 'hidenModal'
             />
         </my-modal>
 
         <post-list
-                :posts = "sortedAndSearchedUsers"
-                @remove = "removePost"
-                v-if="!isPostLoading"
+                :posts = 'searchedUsers'
+                v-if='!isPostLoading'
         />
         <div v-else>Loading...</div>
  </div>
@@ -41,16 +31,10 @@
 <script> // v- @  директив
 import PostForm from './components/PostForm';
 import PostList from './components/PostList'
-import MyButton from "./UI/MyButton";
-import MySelected from "./UI/MySelected";
-import MyInput from "./UI/MyInput";
 import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
 
 export default {
     components: {
-        MyInput,
-        MySelected,
-        MyButton,
         PostForm,
         PostList
     },
@@ -62,25 +46,13 @@ export default {
     methods: {
         ...mapMutations({
             setSearchUsers: 'post/setSearchUsers',
-            setSelectedSort: 'post/setSelectedSort',
-            setModalVisible: 'post/setModalVisible',
             setPosts: 'post/setPosts'
         }),
         ...mapActions({
             fetchUsers: 'post/fetchUsers',
-            deleteUser: 'post/deleteUser',
-            createUser: 'post/createUser',
-            editPost: 'post/editPost'
         }),
-        createPost(post){
-            this.createUser(post);
+        hidenModal(){
             this.modalVisible= false;
-        },
-        editUser(user){
-            this.editPost(user)
-        },
-        removePost(post){
-           this.deleteUser(post.uuid)
         },
         showModal(){
             this.modalVisible = true;
@@ -96,18 +68,14 @@ export default {
         ...mapState({
             posts: state => state.post.posts,
             searchUsers:  state => state.post.searchUsers,
-            selectedSort:  state => state.post.selectedSort,
-            modalVisible:  state => state.post.modalVisible,
             isPostLoading:  state => state.post.isPostLoading,
-            sortOptions: state => state.post.sortOptions,
         }),
         ...mapGetters({
-            sortedUsers: 'post/sortedUsers',
-            sortedAndSearchedUsers: 'post/sortedAndSearchedUsers'
+            searchedUsers: 'post/searchedUsers'
         })
     },
     watch:{//наблюдаемое свойство
-        //тут можем повторить логику выше и сортировка будет работать визуально
+           //useMemo
     }
 }
 </script>
@@ -128,5 +96,4 @@ export default {
     display: flex;
     justify-content: space-between;
 }
-
 </style>

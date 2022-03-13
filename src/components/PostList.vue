@@ -6,8 +6,7 @@
                 v-for="post in posts"
                 v-bind:post = "post"
                 :key="post.uuid"
-                @remove="$emit('remove', post)"
-                @edit="$emit('edit', user)"
+
         />
     </transition-group>
 </div>

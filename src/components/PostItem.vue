@@ -5,13 +5,11 @@
             class = 'input'
             v-model="post.firstName"
             type="text"
-            :placeholder=post.firstName
         />
         <my-input
             class = 'input'
             v-model="post.secondName"
             type="text"
-            :placeholder=post.secondName
         />
     </div>
     <div v-else >
@@ -30,14 +28,13 @@
         >Сохранить</my-button>
 
         <my-button
-            @click="$emit('remove', post)"
+            @click="removePost(post)"
         >Удалить</my-button>
     </div>
 </div>
 </template>
 
 <script>
-import MyInput from "../UI/MyInput";
 import {mapActions} from 'vuex'
 export default {
     data(post){
@@ -50,7 +47,6 @@ export default {
             isVisibleInput: false,
         }
     },
-    components: {MyInput},
     props:{
         post: {
             type: Object,
@@ -59,8 +55,12 @@ export default {
     },
     methods:{
         ...mapActions({
-            editPost: 'post/editPost'
+            editPost: 'post/editUser',
+            deleteUser: 'post/deleteUser',
         }),
+        removePost(post){
+            this.deleteUser(post.uuid)
+        },
         editOn(){
             this.isVisibleInput = true
         },

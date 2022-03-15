@@ -28,7 +28,7 @@
 import PostForm from './components/PostForm';
 import PostList from './components/PostList'
 import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
-//спасибо что проверяете в 3 раз, старался сделать чтобы этот раз был последним
+
 export default {
     components: {
         PostForm,

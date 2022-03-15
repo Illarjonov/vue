@@ -1,77 +1,67 @@
  <template>
- <div class="app">
-     <h1 style="text-align: center">Страница с пользователями</h1>
-     <my-input
-            @update:model-value='setSearchUsers'
-            placeholder='Поиск'>
-     </my-input>
+     <div class="app">
+         <h1 style="text-align: center">Страница с пользователями</h1>
+         <my-input
+                @update:model-value="setSearchUsers"
+                placeholder="Поиск">
+         </my-input>
 
-     <div >
-        <my-button
-                @click='showModal'
-                class = 'addUser'
-        > Добавить пользователя </my-button>
-     </div>
-        <my-modal
-                v-model:show='modalVisible'
-        >
-            <post-form
-                    @hidenModal = 'hidenModal'
+         <div >
+            <my-button
+                    @click="showModal"
+                    class = "addUser"
+            > Добавить пользователя </my-button>
+         </div>
+            <my-modal
+                    v-model:show="modalVisible"
+            >
+                <post-form/>
+            </my-modal>
+
+            <post-list
+                    :posts = "searchedUsers"
+                    v-if="!isPostLoading"
             />
-        </my-modal>
-
-        <post-list
-                :posts = 'searchedUsers'
-                v-if='!isPostLoading'
-        />
-        <div v-else>Loading...</div>
- </div>
+            <div v-else class="loader">Loading...</div>
+     </div>
 </template>
-/
-<script> // v- @  директив
+
+<script>
 import PostForm from './components/PostForm';
 import PostList from './components/PostList'
 import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
 
-export default {
+export default {//спасибо что проверяете в 3 раз, старался сделать чтобы этот раз был последним
     components: {
         PostForm,
         PostList
     },
-    data() { //state
-        return{
-            modalVisible:false
-        }
-    },
     methods: {
         ...mapMutations({
             setSearchUsers: 'post/setSearchUsers',
-            setPosts: 'post/setPosts'
+            setModalVisible: 'post/setModalVisible'
         }),
         ...mapActions({
             fetchUsers: 'post/fetchUsers',
         }),
-        hidenModal(){
-            this.modalVisible= false;
-        },
         showModal(){
-            this.modalVisible = true;
+            this.setModalVisible(true);
         },
     },
     mounted(){ //перед отрисовкой
         this.fetchUsers()
     },
-    beforeUpdated(){
+    beforeUpdated(){//после изменений стейта
         this.fetchUsers()
     },
     computed:{//вычисляемое свойство
-        ...mapState({
-            posts: state => state.post.posts,
-            searchUsers:  state => state.post.searchUsers,
+        ...mapState({//если isPostLoading перенести в getter, не работает
             isPostLoading:  state => state.post.isPostLoading,
+            modalVisible: state=> state.post.modalVisible
         }),
         ...mapGetters({
-            searchedUsers: 'post/searchedUsers'
+            searchedUsers: 'post/searchedUsers',
+            searchUsers: 'post/state/searchUsers',
         })
     },
     watch:{//наблюдаемое свойство
@@ -95,5 +85,11 @@ export default {
     margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
+}
+.loader{
+    display: flex;
+    justify-content: center;
+    font-size: 20px;
+    color: green;
 }
 </style>

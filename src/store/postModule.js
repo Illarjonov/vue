@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {selectIdApi, defaultApi} from "../config/api";
+
 export  const postModule = {
     state: ()=>({
         posts:[],
@@ -8,8 +10,8 @@ export  const postModule = {
     }),
     getters: {
         searchedUsers(state){
-            return [...state.posts].filter(post=>
-                post.firstName.toLowerCase().includes(state.searchUsers.toLowerCase()))
+            return state.posts.filter((post)=>
+                [post.firstName, post.secondName].join(' ').toLowerCase().includes(state.searchUsers.toLowerCase()))
         },
     },
     mutations: {
@@ -42,7 +44,7 @@ export  const postModule = {
         async fetchUsers({commit}) {
             try {
                 commit('setIsPostLoading', true);
-                const response = await axios.get('http://localhost:3123/');
+                const response = await axios.get(defaultApi());
                 commit('setPosts', response.data);
             } catch (e) {
                 console.log(e)
@@ -50,23 +52,24 @@ export  const postModule = {
                 commit('setIsPostLoading', false);
             }
         },
+        async createUser({commit},post) {
+            await axios.post(defaultApi(), post)
+                .then(response =>{
+                    if(response.status){
+                        commit('setPushPosts', response.data);
+                        commit('setModalVisible', false)
+                    }
+                }).catch(e=> console.log(e))
+        },
         async deleteUser({commit},uuid) {
-            await axios.delete(`http://localhost:3123/${uuid}`)
-                .then((response) =>{
+            await axios.delete(selectIdApi(uuid))
+                .then(() =>{
                     commit('setDeletePost', uuid);
                 })
                 .catch(e=> console.log(e))
         },
-        async createUser({commit},post) {
-            await axios.post(`http://localhost:3123/`, post)
-                .then(response =>{
-                    if(response.status){
-                        commit('setPushPosts', response.data)
-                    }
-                }).catch(e=> console.log(e))
-        },
         async editUser({commit},user){
-                await axios.put(`http://localhost:3123/${user.uuid}`, user)
+                await axios.put( selectIdApi(user.uuid), user)
                     .then(response =>{
                         if(response.status){
                             commit('setEditUser', response.data)

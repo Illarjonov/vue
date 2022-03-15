@@ -1,30 +1,26 @@
 <template>
-<div class = 'post'>
-    <div v-if="isVisibleInput" class = 'inputs'>
+<div class = "post">
+    <div class = "inputs">
         <my-input
-            class = 'input'
+            class = "input"
             v-model="post.firstName"
             type="text"
-        />
+            :disabled = "!isDisabledInput"></my-input>
         <my-input
-            class = 'input'
+            class = "input"
             v-model="post.secondName"
             type="text"
-        />
-    </div>
-    <div v-else >
-        <span>{{post.firstName}}</span>
-        <span>{{post.secondName}}</span>
+            :disabled = "!isDisabledInput"></my-input>
     </div>
 
     <div>
         <my-button
-                v-if="!isVisibleInput"
-                @click='editOn'
+                v-if="!isDisabledInput"
+                @click="editOn"
         >Изменить</my-button>
         <my-button
                 v-else
-                @click='editUser(post)'
+                @click="editUser(post)"
         >Сохранить</my-button>
 
         <my-button
@@ -44,7 +40,7 @@ export default {
                 secondName:  post.secondName,
                 uuid:  post.uuid
             },
-            isVisibleInput: false,
+            isDisabledInput: false,
         }
     },
     props:{
@@ -62,11 +58,15 @@ export default {
             this.deleteUser(post.uuid)
         },
         editOn(){
-            this.isVisibleInput = true
+            this.isDisabledInput = true
         },
         editUser(post){
-            this.editPost(post);
-            this.isVisibleInput = false
+            if (post.firstName.length>0 && post.secondName.length>0){
+                 this.editPost(post);
+                 this.isDisabledInput = false
+            } else {
+                alert('Поля не должны оставаться пустыми')
+            }
         },
 
     }

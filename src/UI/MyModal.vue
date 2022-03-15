@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
     name: 'my-modal',
     props: {
@@ -16,8 +17,11 @@ export default {
         }
     },
     methods:{
+        ...mapMutations({
+            setModalVisible: 'post/setModalVisible'
+        }),
         hideModal(){
-            this.$emit('update:show', false)
+            this.setModalVisible(false);
         }
     }
 }

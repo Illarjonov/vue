@@ -87,12 +87,10 @@ export default {
         flex-direction: row;
     }
     .input{
-        margin: 2px;
-        padding: 5px;
-    }
-    span{
         margin-right: 10px ;
         font-size: 20px;
+        padding: 10px;
+        margin-bottom: 10px;
     }
     button{
         margin: 5px;

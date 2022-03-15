@@ -12,9 +12,7 @@
                     class = "addUser"
             > Добавить пользователя </my-button>
          </div>
-            <my-modal
-                    v-model:show="modalVisible"
-            >
+            <my-modal v-model:show="modalVisible">
                 <post-form/>
             </my-modal>
 
@@ -30,8 +28,8 @@
 import PostForm from './components/PostForm';
 import PostList from './components/PostList'
 import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
-
-export default {//спасибо что проверяете в 3 раз, старался сделать чтобы этот раз был последним
+//спасибо что проверяете в 3 раз, старался сделать чтобы этот раз был последним
+export default {
     components: {
         PostForm,
         PostList
